@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>جزئیات بازی</title>
+</head>
+<body>
+    <header>
+        <h1>جزئیات بازی</h1>
+        <nav>
+            <a href="index.html">خانه</a>
+            <a href="games.html">لیست بازی‌ها</a>
+            <a href="support.html">حمایت از ما</a>
+        </nav>
+    </header>
+
+    <main id="game-detail">
+        <!-- جزئیات بازی در اینجا بارگذاری خواهد شد -->
+    </main>
+
+    <footer>
+        <p>تمامی حقوق محفوظ است &copy; 2023</p>
+    </footer>
+
+    <script>
+        function getGameDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const index = urlParams.get('index');
+            const games = JSON.parse(localStorage.getItem('games')) || [];
+
+            if (index !== null && index >= 0 && index < games.length) {
+                const game = games[index];
+                const gameDetailDiv = document.getElementById('game-detail');
+                gameDetailDiv.innerHTML = `
+                    <h2>${game.name}</h2>
+                    <img src="${game.thumbnail}" alt="${game.name}" style="width: 300px; height: auto;">
+                    <div>${game.description}</div>
+                    <div>پلتفرم: ${game.platform}</div>
+                    <a href="#" class="download-button">دانلود</a>
+                `;
+            } else {
+                document.getElementById('game-detail').innerHTML = '<p>بازی پیدا نشد.</p>';
+            }
+        }
+
+        window.onload = getGameDetails;
+    </script>
+</body>
+</html>
