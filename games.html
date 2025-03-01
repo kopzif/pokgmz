@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>لیست بازی‌ها</title>
+</head>
+<body>
+    <header>
+        <h1>مرکز دانلود بازی</h1>
+        <nav>
+            <a href="index.html">خانه</a>
+            <a href="games.html">لیست بازی‌ها</a>
+            <a href="support.html">حمایت از ما</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="games-list" id="games-list">
+            <h2>بازی‌های موجود</h2>
+        </section>
+    </main>
+
+    <footer>
+        <p>تمامی حقوق محفوظ است &copy; 2023</p>
+    </footer>
+
+    <script>
+        function loadGames() {
+            const games = JSON.parse(localStorage.getItem('games')) || [];
+            const gamesList = document.getElementById('games-list');
+
+            games.forEach((game, index) => {
+                const gameItem = document.createElement('div');
+                gameItem.className = 'game-item';
+                gameItem.innerHTML = `
+                    <h3><a href="game-detail.html?index=${index}">${game.name}</a></h3>
+                    <img src="${game.thumbnail}" alt="${game.name}" style="width: 100px; height: auto;">
+                    <div>پلتفرم: ${game.platform}</div>
+                `;
+                gamesList.appendChild(gameItem);
+            });
+        }
+
+        window.onload = loadGames;
+    </script>
+</body>
+</html>
