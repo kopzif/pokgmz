@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>صفحه اصلی بازی‌ها</title>
+</head>
+<body>
+    <header>
+        <h1>خوش آمدید به دنیای بازی‌ها!</h1>
+        <nav>
+            <a href="index.html">خانه</a>
+            <a href="games.html">لیست بازی‌ها</a>
+            <a href="support.html">حمایت از ما</a>
+            <a href="admin.html">پنل مدیریت</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="intro">
+            <h2>آخرین بازی‌ها</h2>
+            <p>در اینجا می‌توانید جدیدترین بازی‌های موجود را مشاهده کنید.</p>
+        </section>
+
+        <section id="games-list"></section>
+    </main>
+
+    <footer>
+        <p>تمامی حقوق محفوظ است &copy; 2023</p>
+    </footer>
+
+    <script>
+        function loadGames() {
+            const games = JSON.parse(localStorage.getItem('games')) || [];
+            const gamesList = document.getElementById('games-list');
+            gamesList.innerHTML = '';
+
+            games.forEach((game) => {
+                const gameItem = document.createElement('div');
+                gameItem.className = 'game-item';
+                gameItem.innerHTML = 
+                    <h3>${game.name}</h3>
+                    <img src="${game.thumbnail}" alt="${game.name}" style="width: 150px; height: auto;">
+                    <div>${game.description}</div>
+                    <div>پلتفرم: ${game.platform}</div>
+                ;
+                gamesList.appendChild(gameItem);
+            });
+        }
+
+        window.onload = loadGames;
+    </script>
+</body>
+</html>
