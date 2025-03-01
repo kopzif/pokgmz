@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>پنل مدیریت</title>
+</head>
+<body>
+    <header>
+        <h1>پنل مدیریت بازی‌ها</h1>
+        <nav>
+            <a href="index.html">خانه</a>
+            <a href="games.html">لیست بازی‌ها</a>
+            <a href="support.html">حمایت از ما</a>
+            <a href="admin.html">پنل مدیریت</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="admin-panel">
+            <h2>افزودن یا ویرایش بازی</h2>
+            <form id="add-game-form">
+                <input type="text" id="game-name" placeholder="نام بازی" required>
+                <textarea id="game-description" placeholder="توضیحات بازی (HTML مجاز است)" required></textarea>
+                <input type="file" id="game-thumbnail" accept="image/*" required>
+                <select id="game-platform" required>
+                    <option value="">انتخاب پلتفرم</option>
+                    <option value="PC">PC</option>
+                    <option value="Xbox">Xbox</option>
+                    <option value="PlayStation">PlayStation</option>
+                    <option value="Switch">Switch</option>
+                </select>
+                <button type="submit">افزودن/ویرایش بازی</button>
+            </form>
+
+            <h2>بازی‌های موجود</h2>
+            <div id="games-list"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>تمامی حقوق محفوظ است &copy; 2023</p>
+    </footer>
+
+    <script>
+        let editIndex = null;
+
+        function loadGames() {
+            const games = JSON.parse(localStorage.getItem('games')) || [];
+            const gamesList = document.getElementById('games-list');
+            gamesList.innerHTML = '';
+
+            games.forEach((game, index) => {
+                const gameItem = document.createElement('div');
+                gameItem.className = 'game-item';
+                gameItem.innerHTML = 
+                    <h3>${game.name}</h3>
+                    <img src="${game.thumbnail}" alt="${game.name}" style="width: 100px; height: auto;">
+                    <div>${game.description}</div>
+                    <div>پلتفرم: ${game.platform}</div>
+                    <button onclick="editGame(${index})">ویرایش</button>
+                ;
+                gamesList.appendChild(gameItem);
+            });
+        }
+
+        function editGame(index) {
+            const games = JSON.parse(localStorage.getItem('games'));
+            const game = games[index];
+            document.getElementById('game-name').value = game.name;
+            document.getElementById('game-description').value = game.description;
+            document.getElementById('game-platform').value = game.platform;
+            editIndex = index;
+        }
+
+        document.getElementById('add-game-form').onsubmit = function(event) {
+            event.preventDefault();
+
+            const gameName = document.getElementById('game-name').value;
+            const gameDescription = document.getElementById('game-description').value;
+            const gameThumbnail = document.getElementById('game-thumbnail').files[0];
+            const gamePlatform = document.getElementById('game-platform').value;
+
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                const games = JSON.parse(localStorage.getItem('games')) || [];
+                
+                if (editIndex !== null) {
+                    // ویرایش بازی
+                    games[editIndex] = {
+                        name: gameName,
+                        description: gameDescription,
+                        thumbnail: reader.result,
+                        platform: gamePlatform
+                    };
+                    editIndex = null; // Reset edit index
+                } else {
+                    // افزودن بازی جدید
+                    games.push({
+                        name: gameName,
+                        description: gameDescription,
+                        thumbnail: reader.result,
+                        platform: gamePlatform
+                    });
+                }
+                
+                localStorage.setItem('games', JSON.stringify(games));
+                alert('بازی جدید اضافه شد یا ویرایش شد!');
+                document.getElementById('add-game-form').reset();
+                loadGames();
+            };
+            if (gameThumbnail) {
+                reader.readAsDataURL(gameThumbnail);
+            }
+        };
+
+        window.onload = loadGames;
+    </script>
+</body>
+</html>
